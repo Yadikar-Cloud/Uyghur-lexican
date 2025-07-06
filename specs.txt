@@ -1,0 +1,9 @@
+ specs:
+ judges if a given sentence is in Uyghur or not
+ returns confidance score (Uyghur words/total words)
+ returns the meaning of the given word in Uyghur
+ returns the category of the given word
+ 
+ dependance:
+ 1. Uyghur root wordlist
+ 2. Stanza library 
