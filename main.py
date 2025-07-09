@@ -1,5 +1,6 @@
 import stanza
 import langid
+import torch
 
 LANGUAGE_CODE = "ug"
 
@@ -8,7 +9,8 @@ with open("lexicon.dic", "r", encoding="utf-8") as f:
 
 # Download Uyghur model (will use UD_Uyghur-UDT under the hood)
 stanza.download(LANGUAGE_CODE)
-nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=True)  # default processors: tokenize, mwt, pos, lemma, depparse
+use_gpu = torch.cuda.is_available()
+nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=use_gpu)  # default processors: tokenize, mwt, pos, lemma, depparse
 
 def is_uyghur_sentence(input_sentence, threshold=0.5):
     if langid.classify(input_sentence)[0] == LANGUAGE_CODE:
