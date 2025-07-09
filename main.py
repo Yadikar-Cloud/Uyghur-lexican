@@ -35,9 +35,8 @@ def is_uyghur_sentence(input_sentence, threshold=0.5):
 if __name__ == "__main__":
     input_sentence = input("Enter a sentence: ")
     is_uyghur, ratio, match_count, total_count = is_uyghur_sentence(input_sentence)
-    if total_count > 0:
-        print(f"{match_count}/{total_count}")
-        print(f"Uyghur detected: {is_uyghur} (ratio: {ratio:.2f})")
+    if is_uyghur:
+        print("The sentence is in Uyghur.")
     else:
-        print("No valid words to check.")
+        print("The sentence is NOT in Uyghur.")
 
