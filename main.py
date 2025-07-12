@@ -12,25 +12,29 @@ stanza.download(LANGUAGE_CODE)
 use_gpu = torch.cuda.is_available()
 nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=use_gpu)  # default processors: tokenize, mwt, pos, lemma, depparse
 
-def is_uyghur_sentence(input_sentence, threshold=0.5):
-    if langid.classify(input_sentence)[0] == LANGUAGE_CODE:
-        doc = nlp(input_sentence)
-        match_count = 0
-        total_count = 0
-        for sentence in doc.sentences:
-            for word in sentence.words:
-                # Exclude punctuation
-                if word.upos != "PUNCT":
-                    total_count += 1
-                    if word.lemma in wordlist:
-                        match_count += 1
-        if total_count > 0:
-            ratio = match_count / total_count
-            return ratio >= threshold, ratio, match_count, total_count
-        else:
-            return False, 0.0, 0, 0
-    else:
-        return False, 0.0, 0, 0
+
+def is_uyghur_sentence(sentences, threshold=0.5):
+    from langid import classify
+    uyghur_indices = [i for i, s in enumerate(sentences) if classify(s)[0] == LANGUAGE_CODE]
+    uyghur_sents = [sentences[i] for i in uyghur_indices]
+    results = ['no'] * len(sentences)
+    if uyghur_sents:
+        docs = nlp(uyghur_sents)
+        idx = 0
+        for doc in docs:
+            match_count = 0
+            total_count = 0
+            for sentence in doc.sentences:
+                for word in sentence.words:
+                    if word.upos != "PUNCT":
+                        total_count += 1
+                        if word.lemma in wordlist:
+                            match_count += 1
+            ratio = match_count / total_count if total_count > 0 else 0
+            if ratio >= threshold:
+                results[uyghur_indices[idx]] = 'ug'
+            idx += 1
+    return results
 
 if __name__ == "__main__":
     input_sentence = input("Enter a sentence: ")
