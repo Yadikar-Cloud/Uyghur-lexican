@@ -10,16 +10,18 @@ with open("lexicon.dic", "r", encoding="utf-8") as f:
 # Download Uyghur model (will use UD_Uyghur-UDT under the hood)
 stanza.download(LANGUAGE_CODE)
 use_gpu = torch.cuda.is_available()
+print(f"GPU enabled: {use_gpu}")
 nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=use_gpu)  # default processors: tokenize, mwt, pos, lemma, depparse
 
 
 def is_uyghur_sentence(sentences, threshold=0.5):
     from langid import classify
     uyghur_indices = [i for i, s in enumerate(sentences) if classify(s)[0] == LANGUAGE_CODE]
-    uyghur_sents = [sentences[i] for i in uyghur_indices]
+    documents = [sentences[i] for i in uyghur_indices]
     results = ['no'] * len(sentences)
-    if uyghur_sents:
-        docs = nlp(uyghur_sents)
+    if documents:
+        in_docs = [stanza.Document([], text=d) for d in documents]
+        docs = nlp(in_docs)
         idx = 0
         for doc in docs:
             match_count = 0
@@ -36,10 +38,10 @@ def is_uyghur_sentence(sentences, threshold=0.5):
             idx += 1
     return results
 
-if __name__ == "__main__":
+if __name__ == "__main__":    Basic
     input_sentence = input("Enter a sentence: ")
-    is_uyghur, ratio, match_count, total_count = is_uyghur_sentence(input_sentence)
-    if is_uyghur:
+    result = is_uyghur_sentence([input_sentence])  # Pass as a list
+    if result[0] == 'ug':
         print("The sentence is in Uyghur.")
     else:
         print("The sentence is NOT in Uyghur.")
