@@ -17,11 +17,10 @@ nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=use_gpu)  # default processors: tok
 def is_uyghur_sentence(sentences, threshold=0.5):
     from langid import classify
     uyghur_indices = [i for i, s in enumerate(sentences) if classify(s)[0] == LANGUAGE_CODE]
-    documents = [sentences[i] for i in uyghur_indices]
+    uyghur_sents = [sentences[i] for i in uyghur_indices]
     results = ['no'] * len(sentences)
-    if documents:
-        in_docs = [stanza.Document([], text=d) for d in documents]
-        docs = nlp(in_docs)
+    if uyghur_sents:
+        docs = nlp.bulk_process(uyghur_sents)
         idx = 0
         for doc in docs:
             match_count = 0
