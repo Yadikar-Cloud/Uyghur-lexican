@@ -37,11 +37,10 @@ def is_uyghur_sentence(sentences, threshold=0.5):
             idx += 1
     return results
 
-if __name__ == "__main__":    Basic
+if __name__ == "__main__":
     input_sentence = input("Enter a sentence: ")
     result = is_uyghur_sentence([input_sentence])  # Pass as a list
     if result[0] == 'ug':
         print("The sentence is in Uyghur.")
     else:
         print("The sentence is NOT in Uyghur.")
-
