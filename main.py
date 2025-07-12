@@ -13,8 +13,7 @@ use_gpu = torch.cuda.is_available()
 print(f"GPU enabled: {use_gpu}")
 nlp = stanza.Pipeline(LANGUAGE_CODE, use_gpu=use_gpu)  # default processors: tokenize, mwt, pos, lemma, depparse
 
-
-def is_uyghur_sentence(sentences, threshold=0.5):
+def is_uyghur_sentence(sentences, threshold=0.4):
     from langid import classify
     uyghur_indices = [i for i, s in enumerate(sentences) if classify(s)[0] == LANGUAGE_CODE]
     uyghur_sents = [sentences[i] for i in uyghur_indices]

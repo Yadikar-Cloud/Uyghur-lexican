@@ -5,7 +5,7 @@ from tqdm import tqdm
 def process_file(input_file, output_file, batch_size=512):
     with open(input_file, 'r', encoding='utf-8') as fin, open(output_file, 'w', encoding='utf-8') as fout:
         batch = []
-        for line in tqdm(fin, desc="Reading", unit="lines"):
+        for line in tqdm(fin, desc="Reading", unit=" lines"):
             batch.append(line.strip())
             if len(batch) == batch_size:
                 results = is_uyghur_sentence(batch)
